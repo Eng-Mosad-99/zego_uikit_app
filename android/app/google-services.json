@@ -7,25 +7,6 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1090733203182:android:adf73ef19b98bb08c11dff",
-        "android_client_info": {
-          "package_name": "com.example.zego_app"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBps473Z6fMgXGG0Ng8Xir4UQzaKOlurMg"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:1090733203182:android:68ebbf2d2cd13632c11dff",
         "android_client_info": {
           "package_name": "com.example.zego_uikit_app"
