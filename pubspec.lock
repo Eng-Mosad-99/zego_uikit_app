@@ -1142,7 +1142,7 @@ packages:
     source: hosted
     version: "2.14.2"
   zego_uikit:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: zego_uikit
       sha256: c0f47744ead118b3638d429cbc5606f37a35e73954eda9c25b0caf5fef3be8fc
