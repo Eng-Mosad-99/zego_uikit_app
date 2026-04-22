@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:zego_uikit_app/cache/shared_prefs.dart';
+import 'package:zego_uikit_app/pages/home_page.dart';
+import 'package:zego_uikit_app/services/call_services.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -12,21 +15,30 @@ class _LoginPageState extends State<LoginPage> {
   final idController = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
-
   bool isLoading = false;
 
-  void onLogin() {
+  Future<void> onLogin() async {
     if (!formKey.currentState!.validate()) return;
 
     setState(() => isLoading = true);
 
-    Future.delayed(const Duration(seconds: 2), () {
-      setState(() => isLoading = false);
+    await SharedPrefs.setString("username", usernameController.text);
+    await SharedPrefs.setString("id", idController.text);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Logged in successfully ✅")),
-      );
-    });
+    await CallServices().onUserLogin(
+      idController.text,
+      usernameController.text,
+    );
+
+    setState(() => isLoading = false);
+
+    if (!mounted) return;
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => const HomePage()),
+      (route) => false,
+    );
   }
 
   @override
@@ -39,82 +51,35 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Login"),
-        centerTitle: true,
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Form(
-            key: formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                /// Title
-                Text(
-                  "Welcome 👋",
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-
-                const SizedBox(height: 30),
-
-                /// Username
-                TextFormField(
-                  controller: usernameController,
-                  decoration: InputDecoration(
-                    labelText: "Username",
-                    prefixIcon: const Icon(Icons.person),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  validator: (value) =>
-                      value!.isEmpty ? "Enter username" : null,
-                ),
-
-                const SizedBox(height: 20),
-
-                /// ID
-                TextFormField(
-                  controller: idController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: "User ID",
-                    prefixIcon: const Icon(Icons.badge),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  validator: (value) =>
-                      value!.isEmpty ? "Enter ID" : null,
-                ),
-
-                const SizedBox(height: 30),
-
-                /// Button
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed: isLoading ? null : onLogin,
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: isLoading
-                        ? const CircularProgressIndicator()
-                        : const Text(
-                            "Login",
-                            style: TextStyle(fontSize: 16),
-                          ),
-                  ),
-                ),
-              ],
-            ),
+      appBar: AppBar(title: const Text("Login")),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Form(
+          key: formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextFormField(
+                controller: usernameController,
+                decoration: const InputDecoration(labelText: "Username"),
+                validator: (v) =>
+                    v == null || v.isEmpty ? "Enter username" : null,
+              ),
+              const SizedBox(height: 10),
+              TextFormField(
+                controller: idController,
+                decoration: const InputDecoration(labelText: "User ID"),
+                validator: (v) =>
+                    v == null || v.isEmpty ? "Enter ID" : null,
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: isLoading ? null : onLogin,
+                child: isLoading
+                    ? const CircularProgressIndicator()
+                    : const Text("Login"),
+              ),
+            ],
           ),
         ),
       ),
