@@ -41,7 +41,10 @@ dependencies:
   shared_preferences: ^2.5.3
   cached_network_image: ^3.4.1
   faker: ^2.2.0
-  zego_uikit: ^2.28.46
+  # zego_uikit: ^4.0.0
+
+dependency_overrides:
+  zego_zim: 2.27.0
 
 dev_dependencies:
   flutter_test:
